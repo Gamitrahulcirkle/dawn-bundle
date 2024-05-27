@@ -1,0 +1,175 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+{{ "money-format.js" | asset_url | script_tag }}
+{{ "bundle-style.css" |  asset_url | stylesheet_tag }}
+{{ "bundle-script.js" | asset_url | script_tag }}
+
+{% if section.settings.main_title != blank %}
+  <div class="jumbotron text-center">
+    <h1>{{ section.settings.main_title }}</h1>
+  </div>
+{% endif %}
+<div class="new-build-bundle-product" data-section_name="new-build-bundle-product">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {% if section.settings.heading != blank %}
+          <h3>{{ section.settings.heading }}</h3>
+        {% endif %}
+        {% if section.settings.sub_heading != blank %}
+          <p>{{ section.settings.sub_heading }}</p>
+        {% endif %}
+        
+        <div class="col-md-12">
+          
+          {% for product in section.settings.product_list %}
+             {% assign currentVariant = product.selected_or_first_available_variant %}
+            <div class="col-md-4">
+              <div class="product-img">
+                {{ product | image_url:width:250, height:250 | image_tag }}
+              </div>
+              <div class="product-title">{{ product.title }}</div>
+              <div class="product-price" data-product_price="{{ product.price }}" data-product_id="{{ currentVariant.id }}">{{ product.price | money }}</div>
+              <div class="product-btn no-quantity" data-product_id="{{ currentVariant.id }}">
+                <button class="minus_btn">
+                  <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" width="2" height="10" transform="rotate(90 10 0)" fill="currentColor"></rect>
+                  </svg>
+                </button>
+                <input autocomplete="false" type="number"
+                  value="0"
+                  min="1"
+                  max="999" 
+                  class="qty_input" 
+                  data-price="200000" 
+                  data-price-formatted="Rs. 2,000.00" 
+                  data-product="40118650208354" 
+                  aria-label="quantity"
+                >
+                <button class="plus_btn">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" width="2" height="10" fill="currentColor"></rect>
+                    <rect x="10" y="4" width="2" height="10" transform="rotate(90 10 4)" fill="currentColor"></rect>
+                  </svg>
+                  <span class="add_bundle_item">ADD</span>
+                </button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        {% if section.settings.bundle_title != blank %}
+          <h2>{{ section.settings.bundle_title }}</h2>
+        {% endif %}
+        <div class="bundle-product-list" data-total_block="{{ section.settings.count_bundle }}">
+          <!-- box number 1  -->
+          {% if section.settings.count_bundle != blank %}
+            {% for index in (1..section.settings.count_bundle) %}
+              <div class="bundle-builder__selected-product bundle-builder-product-{{ forloop.index0 }}" data-bundle-builder-selected-product-id="" data-bundle-builder-selected-product-price="" data-index="{{ forloop.index0 }}">
+                <div class="bundle-builder__selected-product-img-wrapper">
+                  <div class="bundle-builder__selected-product-placeholder" data-bundle-builder-selected-placeholder-placeholder=""></div>
+                  <img src="" alt="" class="bundle-builder__selected-product-image" data-bundle-builder-selected-product-image="">
+                </div>
+                <div class="bundle-builder__selected-product-title-wrap">
+                  <span class="bundle-builder__selected-product-title" data-bundle-builder-selected-product-title=""></span>
+                  <span class="bundle-builder__selected-product-variant-title" data-bundle-builder-selected-product-variant-title=""></span>
+                </div>
+                <button class="remove_bundle lsg-bundle-product-select-quantity-minus" data-bundle-builder-selected-product-remove-button="">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="9.5" fill="#F7F8F9" stroke="black"></circle>
+                    <rect x="12.6665" y="6" width="1.8856" height="9.42801" transform="rotate(45 12.6665 6)" fill="black"></rect>
+                    <rect x="14" y="12.6665" width="1.8856" height="9.42801" transform="rotate(135 14 12.6665)" fill="black"></rect>
+                  </svg>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+          <!-- box number 3  -->          
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="progress_bar" style="display:none">
+          <div class="current_progress" style="background-color: #222f51;transition: width 0.5s ease; width:0%"></div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="bundle_total" style="display:none">
+          <span> Bundle Total : </span>
+          <span class="bundle_total_price" data-totale_price=""></span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        {%- form 'product',
+           product,
+           id: "build_bundle_products",
+           class: 'form',
+           novalidate: 'novalidate',
+           data-type: 'add-to-cart-form'
+        -%}
+          <input type="hidden" name="items[0][id]" value="{{ product.selected_or_first_available_variant.id }}">
+          <button type="submit" class="lsg-bundle-submit-button bundleProductAdd btn" data-lsg-bundle-atc="" disabled>
+            <span class="lsg-bundle-submit-button-atc-text" data-lsg-bundle-submit-button-atc-text=""> Add to Cart </span>
+          </button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Build bundle product",
+    "settings": [
+      {
+        "type":"text",
+        "id":"main_title",
+        "label":"Main heading",
+        "default":"Buld product bundle"
+      },
+      {
+        "type":"text",
+        "id":"heading",
+        "label":"Heading"
+      },
+      {
+        "type":"text",
+        "id":"sub_heading",
+        "label":"Sub heading"
+      },
+      {
+        "type":"header",
+        "content":"Details about create number of bundle products"
+      },
+      {
+        "type":"text",
+        "id":"bundle_title",
+        "label":"Heading"
+      },
+      {
+        "type": "range",
+        "id": "count_bundle",
+        "min": 3,
+        "max": 6,
+        "step": 1,
+        "label": "How many of bundle products added in once",
+        "default": 3
+      },
+      {
+        "type":"header",
+        "content":"Select product for build bundle"
+      },
+      {
+        "type":"product_list",
+        "id":"product_list",
+        "label":"Product list"
+      }
+    ],
+    "presets":[
+      {
+        "name":"Build bundle product"
+      }
+    ]
+  }
+{% endschema %}

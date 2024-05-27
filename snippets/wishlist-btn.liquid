@@ -1,0 +1,22 @@
+<button type="button" wishlist_button data-product_handle="{{ product.handle }}" class="custom_wishlist {% if active %} active {% endif %}">
+  {% render "wishlist-icon" %}
+</button>
+<style>
+  .custom_wishlist{
+    align-items: center;
+    margin-left: 15px;    
+    cursor: pointer;
+  }
+  .card__badged.bottom.left.wishlist {
+    position: relative;
+    grid-row-start: 4;
+    z-index: 1;
+    display: flex;
+    height: 20px;
+    width: 20px;
+    top: 10px;
+  }
+  .custom_wishlist.active svg {
+    fill: red;
+}
+</style>
